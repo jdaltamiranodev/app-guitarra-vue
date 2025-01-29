@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, reactive, onMounted } from 'vue';
+    import { ref, reactive, onMounted, watch } from 'vue';
     import { db } from './data/guitarras.js';
     import Guitarra from './components/Guitarra.vue';
     import Header from './components/Header.vue';
@@ -9,10 +9,25 @@
     const carrito = ref([]);
     const guitarra = ref({});
 
+    watch(carrito, () => {
+        guardarLocalStorage();
+    }, {
+        deep: true
+    })
+
     onMounted(() => {
         guitarras.value = db;
         guitarra.value = db[3];
+
+        const carritoStorage = localStorage.getItem('carrito');
+        if(carritoStorage) {
+            carrito.value = JSON.parse(carritoStorage);
+        }
     })
+
+    const guardarLocalStorage = () => {
+        localStorage.setItem('carrito', JSON.stringify(carrito.value));
+    }
 
     const agregarCarrito = (guitarra) => {
         const existeCarrito = carrito.value.findIndex(producto => producto.id === guitarra.id);
@@ -39,6 +54,11 @@
     const eliminarProducto = (id) => {
         carrito.value = carrito.value.filter(producto => producto.id !== id);
     }
+
+    const vaciarCarrito = () => {
+        // console.log('vaciar');
+        carrito.value = [];
+    }
 </script>
 
 <template>
@@ -49,6 +69,7 @@
         @decrementar-cantidad="decrementarCantidad"
         @agregar-carrito="agregarCarrito"
         @eliminar-producto="eliminarProducto"
+        @vaciar-carrito="vaciarCarrito"
     />
   
     <main class="container-xl mt-5">
