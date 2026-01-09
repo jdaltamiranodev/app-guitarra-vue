@@ -23,6 +23,4 @@ Aplicación web interactiva de guitarra desarrollada con **Vue.js**, carrito de 
    git clone https://github.com/tu-usuario/tu-repositorio.git
    npm install
    npm run dev
-```bash
-
-
+```
